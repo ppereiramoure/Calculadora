@@ -75,7 +75,7 @@ public class Calculadora {
                 Pantalla.setText(Pantalla.getText().concat("."));
                 primerNumero = false;
             } else {
-                if (!validarPunto(Pantalla.getText())) {
+                if (!aceptarPunto(Pantalla.getText())) {
                     Pantalla.setText(Pantalla.getText().concat("."));
 
                 }
@@ -119,7 +119,7 @@ public class Calculadora {
     }
 
 
-    public boolean validarPunto(String textoLabel) {
+    public boolean aceptarPunto(String textoLabel) {
 
         boolean validacion = false;
 
@@ -166,7 +166,7 @@ public class Calculadora {
                     conexServer = new ConectarServer();
                     datoConvertido = Double.parseDouble(Pantalla.getText());
                     datoPantalla = String.valueOf(datoConvertido);
-                    conexServer.enviarNumerosServidor(datoPantalla.concat(",").concat(operacion));
+                    conexServer.salidaNumerosServidor(datoPantalla.concat(",").concat(operacion));
                     ultimaOperacion = operacion;
                 } finally {
                     try {
@@ -180,9 +180,6 @@ public class Calculadora {
             primerNumero = true;
         }
 
-        public void acumularOperacion(Double numero, String operacio) {
-
-        }
 
     }
 
@@ -193,7 +190,7 @@ public class Calculadora {
         static Socket skCliente;
 
 
-        public synchronized void enviarNumerosServidor(String numero) {
+        public synchronized void salidaNumerosServidor(String numero) {
             try {
                 skCliente = new Socket(DIRECCION, PUERTO);
                 while (infintoC) {
@@ -204,7 +201,7 @@ public class Calculadora {
                         OutputStream auxOut = skCliente.getOutputStream();
                         DataOutputStream infoSalida = new DataOutputStream(auxOut);
                         infoSalida.writeUTF(numero);
-                        recibirDatosServer();
+                        entradaDatosServer();
                     }
                 }
             } catch (IOException e) {
@@ -213,7 +210,7 @@ public class Calculadora {
         }
 
 
-        public void recibirDatosServer() throws IOException {
+        public void entradaDatosServer() throws IOException {
 
             InputStream auxIn = skCliente.getInputStream();
             DataInputStream infoEntrada = new DataInputStream(auxIn);

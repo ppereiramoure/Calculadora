@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Servidor extends Thread {
 
     ArrayList<String> numeros = new ArrayList();
-    ArrayList<String> ultimaOperacion = new ArrayList();
+    ArrayList<String> operacionFinal = new ArrayList();
     private final int puerto;
     private DataInputStream entradaDatos;
     private Double resultado = 0.0;
@@ -27,18 +27,18 @@ public class Servidor extends Thread {
     public void run() {
         try {
             ServerSocket socketServidor = new ServerSocket(this.puerto);
-            System.out.println(" Servidor en espera por puerto " + puerto);
+            System.out.println(" Servidor esperando en el puerto " + puerto);
             String mensajeCliente = "";
-            while (!mensajeCliente.equalsIgnoreCase("Bucle infinito")) {
+            while (!mensajeCliente.equalsIgnoreCase("Bucle")) {
                 Socket socketCliente = socketServidor.accept();
                 entradaDatos = new DataInputStream(socketCliente.getInputStream());
                 mensajeCliente = entradaDatos.readUTF();
                 String[] partes = mensajeCliente.split(",");
 
                 numeros.add(partes[0]);
-                ultimaOperacion.add(partes[1]);
-                if (numeros.size() == 2 && ultimaOperacion.get(1).equals("=")) {
-                    switch (ultimaOperacion.get(0)) {
+                operacionFinal.add(partes[1]);
+                if (numeros.size() == 2 && operacionFinal.get(1).equals("=")) {
+                    switch (operacionFinal.get(0)) {
                         case "+":
                             resultado = Double.parseDouble(numeros.get(0)) + Double.parseDouble(numeros.get(1));
                             break;
@@ -53,7 +53,7 @@ public class Servidor extends Thread {
                             break;
                     }
                     numeros.clear();
-                    ultimaOperacion.clear();
+                    operacionFinal.clear();
 
                     OutputStream auxOut = socketCliente.getOutputStream();
                     DataOutputStream infoSalida = new DataOutputStream(auxOut);
